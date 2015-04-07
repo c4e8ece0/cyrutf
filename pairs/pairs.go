@@ -1,8 +1,5 @@
-// Хранилище пар байтов и их весов в
-// однобайтовой кирилической кодировке
-
+// Package pairs stores weighted dibytes for cyrillic charset
 package pairs
-
 
 const (
 	CP866 = iota

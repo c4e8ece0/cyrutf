@@ -1,18 +1,18 @@
-// Package cyrutf determine cyrrilic charset by statistics of byte-pairs
+// Package cyrutf determine cyrrilic charset by statistics of dibytes
 package cyrutf
 
 import (
 	"errors"
 	"math"
 
-	. "github.com/srf/cyrutf/pairs"
+	. "github.com/c4e8ece0/cyrutf/pairs"
 )
 
 // Const to string translation
 var ux = map[byte]string{
 	CP866:  "cp866",
 	CP1251: "windows-1251",
-	ISO:    "iso-8859-5", // iso-8859-5
+	ISO:    "iso-8859-5",
 	KOI8:   "koi8",
 }
 

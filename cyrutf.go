@@ -10,11 +10,24 @@ import (
 
 // Const to string translation
 var ux = map[byte]string{
-	CP866:  "cp866",
-	CP1251: "windows-1251",
-	ISO:    "iso-8859-5",
-	KOI8:   "koi8",
+	CP866:   "cp866",
+	CP1251:  "windows-1251",
+	ISO:     "iso-8859-5",
+	KOI8:    "koi8",
+	UTF16BE: "utf-16 be",
+	UTF16LE: "utf-16 le",
+	UTF8:    "utf-8",
 }
+
+// const (
+// 	UTF8 = iota
+// 	UTF16BE
+// 	UTF16LE
+// 	CP866
+// 	CP1251
+// 	ISO
+// 	KOI8
+// )
 
 // DetermineEncoding determines cyrillic charset and return string-name, charset-stat and error.
 func DetermineEncoding(a []byte) (string, map[byte]float32, error) {

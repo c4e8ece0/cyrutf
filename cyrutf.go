@@ -3,9 +3,17 @@ package cyrutf
 
 import (
 	"errors"
+	"io"
+	"io/ioutil"
 	"math"
 
 	. "github.com/c4e8ece0/cyrutf/pairs"
+	"golang.org/x/net/html/charset"
+)
+
+// Errs
+var (
+	ErrCharsetNotFound = errors.New("Charset not found")
 )
 
 // Const to string translation
@@ -19,15 +27,26 @@ var ux = map[byte]string{
 	UTF8:    "utf-8",
 }
 
-// const (
-// 	UTF8 = iota
-// 	UTF16BE
-// 	UTF16LE
-// 	CP866
-// 	CP1251
-// 	ISO
-// 	KOI8
-// )
+// NewReader return io.Reader with utf-8 charset
+func NewReader(r io.ReadSeeker) (io.Reader, error) {
+	r.Seek(0, 0)
+	str, _ := ioutil.ReadAll(r)
+	r.Seek(0, 0)
+	c, _, err := DetermineEncoding(str)
+	enc := string(c)
+	if err != nil {
+		_, p, _ := charset.DetermineEncoding(str, "text/html") // works only on utf-8
+		c = p
+	}
+	if enc == "windows-1252" {
+		enc = "windows-1251"
+	}
+	if enc == "" {
+		enc = "utf-8" // in the name of universe
+	}
+	return charset.NewReaderByName(enc, r) // become charset.NewReaderLabel() in newer Golang
+
+}
 
 // DetermineEncoding determines cyrillic charset and return string-name, charset-stat and error.
 func DetermineEncoding(a []byte) (string, map[byte]float32, error) {
@@ -43,7 +62,7 @@ func DetermineEncoding(a []byte) (string, map[byte]float32, error) {
 		}
 	}
 	if !found {
-		return "", nil, errors.New("Charset not found")
+		return "", nil, ErrCharsetNotFound
 	}
 	return charset, stat, nil
 }

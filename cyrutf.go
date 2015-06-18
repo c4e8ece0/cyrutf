@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
+	"strings"
 
 	. "github.com/c4e8ece0/cyrutf/pairs"
 	"golang.org/x/net/html/charset"
@@ -28,10 +29,8 @@ var ux = map[byte]string{
 }
 
 // NewReader return io.Reader with utf-8 charset
-func NewReader(r io.ReadSeeker) (io.Reader, error) {
-	r.Seek(0, 0)
+func NewReader(r io.Reader) (io.Reader, error) {
 	str, _ := ioutil.ReadAll(r)
-	r.Seek(0, 0)
 	c, _, err := DetermineEncoding(str)
 	enc := string(c)
 	if err != nil {
@@ -44,7 +43,7 @@ func NewReader(r io.ReadSeeker) (io.Reader, error) {
 	if enc == "" {
 		enc = "utf-8" // in the name of universe
 	}
-	return charset.NewReaderByName(enc, r) // become charset.NewReaderLabel() in newer Golang
+	return charset.NewReaderByName(enc, strings.NewReader(string(str))) // become charset.NewReaderLabel() in newer Golang
 
 }
 

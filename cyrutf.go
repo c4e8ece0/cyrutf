@@ -43,7 +43,7 @@ func NewReader(r io.Reader) (io.Reader, error) {
 	if enc == "" {
 		enc = "utf-8" // in the name of universe
 	}
-	return charset.NewReaderByName(enc, strings.NewReader(string(str))) // become charset.NewReaderLabel() in newer Golang
+	return charset.NewReaderLabel(enc, strings.NewReader(string(str))) // was charset.NewReaderByName()
 
 }
 

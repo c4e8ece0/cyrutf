@@ -10,12 +10,10 @@ import (
 
 	. "github.com/c4e8ece0/cyrutf/pairs"
 	"golang.org/x/net/html/charset"
+	"golang.org/x/text/unicode/norm"
 )
 
-// Errs
-var (
-	ErrCharsetNotFound = errors.New("Charset not found")
-)
+var ErrCharsetNotFound = errors.New("Charset not found")
 
 // Const to string translation
 var ux = map[byte]string{
@@ -28,7 +26,7 @@ var ux = map[byte]string{
 	UTF8:    "utf-8",
 }
 
-// NewReader return io.Reader with utf-8 charset
+// NewReader return io.Reader with utf-8 encoded data
 func NewReader(r io.Reader) (io.Reader, error) {
 	str, _ := ioutil.ReadAll(r)
 	c, _, err := DetermineEncoding(str)
@@ -43,11 +41,11 @@ func NewReader(r io.Reader) (io.Reader, error) {
 	if enc == "" {
 		enc = "utf-8" // in the name of universe
 	}
-	return charset.NewReaderLabel(enc, strings.NewReader(string(str))) // was charset.NewReaderByName()
+	return norm.NFC.Reader(charset.NewReaderLabel(enc, strings.NewReader(string(str))))
 
 }
 
-// DetermineEncoding determines cyrillic charset and return string-name, charset-stat and error.
+// Determine cyrillic charset and return string-name, charset-stat and error.
 func DetermineEncoding(a []byte) (string, map[byte]float32, error) {
 	stat := Calc(a)
 	var max float32 = -1
@@ -66,7 +64,7 @@ func DetermineEncoding(a []byte) (string, map[byte]float32, error) {
 	return charset, stat, nil
 }
 
-// Calc count pairs of bytes for cyrillic charsets and return statistics as map of
+// Count pairs of bytes for cyrillic charsets and return statistics as map of
 // internal_id => value
 func Calc(a []byte) map[byte]float32 {
 	l := len(a) - 1

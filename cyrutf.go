@@ -26,6 +26,9 @@ var ux = map[byte]string{
 	UTF8:    "utf-8",
 }
 
+// Max bytes to processing
+var Limit int = 1000000
+
 // NewReader return io.Reader with utf-8 encoded data
 func NewReader(r io.Reader) (io.Reader, error) {
 	str, _ := ioutil.ReadAll(r)
@@ -70,6 +73,10 @@ func Calc(a []byte) map[byte]float32 {
 	l := len(a) - 1
 	stat := make(map[byte]float32)
 	cnt := make(map[byte]int)
+
+	if l > Limit {
+		l = Limit
+	}
 
 	for i := 0; i < l; i++ {
 		key := uint16(a[i])<<8 | uint16(a[i+1])

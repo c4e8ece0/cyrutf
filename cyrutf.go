@@ -30,7 +30,7 @@ var ux = map[byte]string{
 var Limit int = 1000000
 
 // NewReader return io.Reader with utf-8 encoded data
-func NewReader(r io.Reader) (io.Reader, error) {
+func NewReader(r io.Reader) io.Reader {
 	str, _ := ioutil.ReadAll(r)
 	c, _, err := DetermineEncoding(str)
 	enc := string(c)
@@ -44,7 +44,7 @@ func NewReader(r io.Reader) (io.Reader, error) {
 	if enc == "" {
 		enc = "utf-8" // in the name of universe
 	}
-	return norm.NFC.Reader(charset.NewReaderLabel(enc, strings.NewReader(string(str))))
+	return norm.NFC.Reader( charset.NewReaderLabel(enc, strings.NewReader(string(str))) )
 
 }
 

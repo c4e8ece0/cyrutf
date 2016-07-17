@@ -44,7 +44,9 @@ func NewReader(r io.Reader) io.Reader {
 	if enc == "" {
 		enc = "utf-8" // in the name of universe
 	}
-	return norm.NFC.Reader( charset.NewReaderLabel(enc, strings.NewReader(string(str))) )
+
+	rs, _ := charset.NewReaderLabel(enc, strings.NewReader(string(str)))
+	return norm.NFC.Reader(rs)
 
 }
 
